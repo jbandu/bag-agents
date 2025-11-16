@@ -45,29 +45,51 @@ Copa Airlines routes through PTY hub:
 ### Test 1: Prediction Agent - Identify At-Risk Bags
 
 ```bash
-curl -X POST https://bag-agents-production.up.railway.app/api/v1/agents/invoke \
+curl -X POST https://bag-agents-production.up.railway.app/agents/invoke \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: YOUR_API_KEY" \
   -d '{
     "agent_name": "prediction",
     "input_data": {
       "flight_id": "CM102",
-      "connection_time_minutes": 45,
-      "equipment_health": 73
+      "departure_airport": "PTY",
+      "arrival_airport": "JFK",
+      "connection_time": 45
     }
   }'
 ```
 
-**Expected**: Should identify bags at risk of missing CM102 (PTY→JFK) connection
+**Expected Response**:
+```json
+{
+  "agent_name": "prediction",
+  "result": {
+    "flight_id": "CM102",
+    "route": "PTY -> JFK",
+    "risk_score": 35,
+    "risk_level": "MEDIUM",
+    "contributing_factors": [
+      "Short connection time detected",
+      "High volume period",
+      "Weather advisory in effect"
+    ],
+    "recommendations": [
+      "Pre-stage baggage handling team",
+      "Monitor connection windows",
+      "Alert customer service for potential delays"
+    ],
+    "confidence": 0.82
+  }
+}
+```
 
 ---
 
 ### Test 2: Root Cause Analysis - Analyze Incident
 
 ```bash
-curl -X POST https://bag-agents-production.up.railway.app/api/v1/agents/invoke \
+curl -X POST https://bag-agents-production.up.railway.app/agents/invoke \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: YOUR_API_KEY" \
+   \
   -d '{
     "agent_name": "root_cause",
     "input_data": {
@@ -85,9 +107,9 @@ curl -X POST https://bag-agents-production.up.railway.app/api/v1/agents/invoke \
 ### Test 3: Customer Service - Handle Complaint
 
 ```bash
-curl -X POST https://bag-agents-production.up.railway.app/api/v1/agents/invoke \
+curl -X POST https://bag-agents-production.up.railway.app/agents/invoke \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: YOUR_API_KEY" \
+   \
   -d '{
     "agent_name": "customer_service",
     "input_data": {
@@ -105,9 +127,9 @@ curl -X POST https://bag-agents-production.up.railway.app/api/v1/agents/invoke \
 ### Test 4: Compensation Agent - Process Claim
 
 ```bash
-curl -X POST https://bag-agents-production.up.railway.app/api/v1/agents/invoke \
+curl -X POST https://bag-agents-production.up.railway.app/agents/invoke \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: YOUR_API_KEY" \
+   \
   -d '{
     "agent_name": "compensation",
     "input_data": {
@@ -126,9 +148,9 @@ curl -X POST https://bag-agents-production.up.railway.app/api/v1/agents/invoke \
 ### Test 5: Demand Forecast - Predict Baggage Load
 
 ```bash
-curl -X POST https://bag-agents-production.up.railway.app/api/v1/agents/invoke \
+curl -X POST https://bag-agents-production.up.railway.app/agents/invoke \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: YOUR_API_KEY" \
+   \
   -d '{
     "agent_name": "demand_forecast",
     "input_data": {
@@ -146,9 +168,9 @@ curl -X POST https://bag-agents-production.up.railway.app/api/v1/agents/invoke \
 ### Test 6: Infrastructure Health - Equipment Check
 
 ```bash
-curl -X POST https://bag-agents-production.up.railway.app/api/v1/agents/invoke \
+curl -X POST https://bag-agents-production.up.railway.app/agents/invoke \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: YOUR_API_KEY" \
+   \
   -d '{
     "agent_name": "infrastructure_health",
     "input_data": {
@@ -165,9 +187,9 @@ curl -X POST https://bag-agents-production.up.railway.app/api/v1/agents/invoke \
 ### Test 7: Route Optimization - Bag Routing
 
 ```bash
-curl -X POST https://bag-agents-production.up.railway.app/api/v1/agents/invoke \
+curl -X POST https://bag-agents-production.up.railway.app/agents/invoke \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: YOUR_API_KEY" \
+   \
   -d '{
     "agent_name": "route_optimization",
     "input_data": {
@@ -186,9 +208,9 @@ curl -X POST https://bag-agents-production.up.railway.app/api/v1/agents/invoke \
 ### Test 8: Orchestrator - Multi-Agent Workflow
 
 ```bash
-curl -X POST https://bag-agents-production.up.railway.app/api/v1/agents/invoke \
+curl -X POST https://bag-agents-production.up.railway.app/agents/invoke \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: YOUR_API_KEY" \
+   \
   -d '{
     "agent_name": "orchestrator",
     "input_data": {
@@ -203,23 +225,17 @@ curl -X POST https://bag-agents-production.up.railway.app/api/v1/agents/invoke \
 
 ---
 
-## 🔑 API Key Setup
+## 🔑 API Authentication Status
 
-Currently, the API uses header-based authentication. You need to add an API key:
+✅ **Currently configured**: `ENVIRONMENT=development` (no authentication required)
 
-### Option 1: Development Mode (No Auth)
-Add to Railway environment variables:
-```
-ENVIRONMENT=development
-```
+All agent endpoints can be accessed without API keys for testing.
 
-### Option 2: Production Mode (With API Key)
-Add to Railway environment variables:
-```
-API_KEYS=copa-demo-key-2024,copa-prod-key-2024
-```
+### To Enable API Key Authentication (Production)
 
-Then use in requests:
+1. Remove `ENVIRONMENT=development` from Railway variables
+2. Add `API_KEYS=copa-demo-key-2024,copa-prod-key-2024`
+3. Include API key in requests:
 ```bash
 -H "X-API-Key: copa-demo-key-2024"
 ```
@@ -235,12 +251,12 @@ curl https://bag-agents-production.up.railway.app/health
 
 ### List All Agents
 ```bash
-curl https://bag-agents-production.up.railway.app/api/v1/agents
+curl https://bag-agents-production.up.railway.app/agents
 ```
 
-### Agent Status
+### Root Endpoint (API Info)
 ```bash
-curl https://bag-agents-production.up.railway.app/api/v1/agents/{agent_name}/status
+curl https://bag-agents-production.up.railway.app/
 ```
 
 ### Prometheus Metrics
