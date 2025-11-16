@@ -1,0 +1,467 @@
+{
+  "demo_info": {
+    "date": "2025-12-15",
+    "presentation_duration_minutes": 10,
+    "scenarios_count": 5,
+    "description": "Five featured bags demonstrating key AI capabilities"
+  },
+  "scenarios": [
+    {
+      "scenario_id": 1,
+      "name": "Happy Path - Normal Connection Success",
+      "bag_id": "TAG-DEMO-001",
+      "description": "Perfect journey with comfortable connection time. Demonstrates normal operations.",
+      "expected_outcome": "Success - Delivered on time",
+      "demo_timing": "T+0:00 to T+2:00",
+      "bag": {
+        "bag_id": "TAG-DEMO-001",
+        "tag_number": "TAG-DEMO-001",
+        "passenger": {
+          "name": "María Rodríguez",
+          "booking_ref": "ABC123",
+          "contact": "+1-305-555-0123",
+          "email": "maria.rodriguez@email.com",
+          "frequent_flyer": "CM987654321",
+          "tier": "Gold"
+        },
+        "journey": {
+          "type": "connection",
+          "origin": "JFK",
+          "destination": "GRU",
+          "inbound_flight": "CM455",
+          "inbound_arrival": "2025-12-15T13:45:00-05:00",
+          "outbound_flight": "CM801",
+          "outbound_departure": "2025-12-15T15:45:00-05:00",
+          "connection_airport": "PTY",
+          "final_destination": "GRU",
+          "connection_time_min": 120,
+          "connection_category": "normal",
+          "mct_min": 45
+        },
+        "characteristics": {
+          "weight_kg": 23.5,
+          "type": "standard",
+          "special_handling": null,
+          "declared_value_usd": 500
+        },
+        "risk_factors": {
+          "tight_connection": false,
+          "first_bag": true,
+          "vip_passenger": true,
+          "high_value": false,
+          "international": true
+        },
+        "current_status": "in_transit",
+        "current_location": "in_flight"
+      },
+      "demo_script": [
+        "Bag TAG-DEMO-001 checks in at JFK",
+        "Prediction Agent: Low risk (score: 15)",
+        "Smooth journey through all checkpoints",
+        "Arrives PTY on time",
+        "2 hour connection - comfortable",
+        "Transferred successfully",
+        "Boards CM801 to GRU",
+        "✅ Delivered successfully"
+      ]
+    },
+    {
+      "scenario_id": 2,
+      "name": "AI Prevents Missed Connection",
+      "bag_id": "TAG-DEMO-002",
+      "description": "Inbound delay creates tight connection. AI flags risk, recommends intervention, connection succeeds.",
+      "expected_outcome": "Success - Connection made with AI intervention",
+      "demo_timing": "T+1:00 to T+3:30",
+      "bag": {
+        "bag_id": "TAG-DEMO-002",
+        "tag_number": "TAG-DEMO-002",
+        "passenger": {
+          "name": "Carlos Martínez",
+          "booking_ref": "XYZ789",
+          "contact": "+52-55-1234-5678",
+          "email": "carlos.martinez@email.com",
+          "frequent_flyer": "CM456789123",
+          "tier": "Platinum"
+        },
+        "journey": {
+          "type": "connection",
+          "origin": "LAX",
+          "destination": "MEX",
+          "inbound_flight": "CM490",
+          "inbound_arrival": "2025-12-15T14:05:00-05:00",
+          "inbound_delay_minutes": 15,
+          "actual_inbound_arrival": "2025-12-15T14:20:00-05:00",
+          "outbound_flight": "CM685",
+          "outbound_departure": "2025-12-15T14:55:00-05:00",
+          "connection_airport": "PTY",
+          "final_destination": "MEX",
+          "original_connection_time_min": 50,
+          "actual_connection_time_min": 35,
+          "connection_category": "very_tight",
+          "mct_min": 45
+        },
+        "characteristics": {
+          "weight_kg": 21.2,
+          "type": "standard",
+          "special_handling": "priority",
+          "declared_value_usd": 2000
+        },
+        "risk_factors": {
+          "tight_connection": true,
+          "first_bag": true,
+          "vip_passenger": true,
+          "high_value": true,
+          "international": true,
+          "inbound_delay": true
+        },
+        "current_status": "in_transit",
+        "current_location": "in_flight"
+      },
+      "ai_intervention": {
+        "triggered_at": "T+1:00",
+        "prediction_agent": {
+          "risk_score": 87,
+          "risk_level": "CRITICAL",
+          "confidence": 0.91,
+          "factors": [
+            "Connection time 35 min < MCT 45 min",
+            "Inbound flight delayed 15 minutes",
+            "High-value bag ($2,000)",
+            "VIP passenger (Platinum)"
+          ],
+          "recommendations": [
+            "Flag for priority handling",
+            "Expedite through transfer",
+            "Alert ground crew",
+            "Prepare contingency"
+          ]
+        },
+        "orchestrator_actions": [
+          "T+1:15 - Route Optimization: Find fastest transfer route",
+          "T+1:20 - Infrastructure Health: Verify CONV-2 operational",
+          "T+1:25 - Notification sent to handler: 'Priority bag - expedite'",
+          "T+1:30 - Bag flagged in system as 'RUSH'",
+          "T+2:00 - Bag transferred via express route (CONV-2)",
+          "T+2:25 - Loaded on CM685 (5 min before departure)"
+        ],
+        "outcome": {
+          "connection_made": true,
+          "time_to_spare_min": 5,
+          "roi_calculation": {
+            "costs_avoided": {
+              "rebooking": 200,
+              "compensation": 150,
+              "handling": 50,
+              "total": 400
+            },
+            "ai_cost": 5,
+            "net_savings": 395,
+            "roi_multiplier": 79
+          }
+        }
+      },
+      "demo_script": [
+        "T+1:00 - Inbound CM490 delayed 15 min",
+        "T+1:15 - Prediction Agent flags HIGH RISK (score: 87)",
+        "T+1:20 - Alert: Connection time now only 35 min (< MCT 45)",
+        "T+1:25 - Orchestrator recommends: EXPEDITE TRANSFER",
+        "T+1:30 - Handler receives mobile alert",
+        "T+2:00 - Bag priority transferred via CONV-2",
+        "T+2:25 - Bag loaded on CM685",
+        "T+2:30 - CM685 departs with bag onboard",
+        "✅ Connection SAVED - ROI: $395 / $5 = 79x"
+      ]
+    },
+    {
+      "scenario_id": 3,
+      "name": "Mishandling → Full Recovery",
+      "bag_id": "TAG-DEMO-003",
+      "description": "Missed connection due to delay. Complete lifecycle: root cause, PIR, compensation, rebook, delivery.",
+      "expected_outcome": "Resolved - Delivered next flight with compensation",
+      "demo_timing": "T+3:30 to T+6:00",
+      "bag": {
+        "bag_id": "TAG-DEMO-003",
+        "tag_number": "TAG-DEMO-003",
+        "passenger": {
+          "name": "Ana López",
+          "booking_ref": "DEF456",
+          "contact": "+57-1-234-5678",
+          "email": "ana.lopez@email.com",
+          "frequent_flyer": null,
+          "tier": null
+        },
+        "journey": {
+          "type": "connection",
+          "origin": "MIA",
+          "destination": "BOG",
+          "inbound_flight": "CM305",
+          "inbound_arrival": "2025-12-15T13:30:00-05:00",
+          "inbound_delay_minutes": 45,
+          "actual_inbound_arrival": "2025-12-15T14:15:00-05:00",
+          "outbound_flight": "CM121",
+          "outbound_departure": "2025-12-15T14:30:00-05:00",
+          "connection_airport": "PTY",
+          "final_destination": "BOG",
+          "original_connection_time_min": 60,
+          "actual_connection_time_min": 15,
+          "connection_category": "very_tight",
+          "mct_min": 45,
+          "connection_missed": true,
+          "rebook_flight": "CM123",
+          "rebook_departure": "2025-12-15T18:30:00-05:00"
+        },
+        "characteristics": {
+          "weight_kg": 24.8,
+          "type": "standard",
+          "special_handling": "fragile",
+          "declared_value_usd": 1500
+        },
+        "risk_factors": {
+          "tight_connection": true,
+          "first_bag": true,
+          "vip_passenger": false,
+          "high_value": false,
+          "international": true,
+          "inbound_delay": true,
+          "connection_missed": true
+        },
+        "current_status": "mishandled",
+        "current_location": "PTY"
+      },
+      "mishandling_workflow": {
+        "detected_at": "T+3:30",
+        "pir_number": "PTY20251215001",
+        "root_cause_analysis": {
+          "executed_at": "T+4:00",
+          "root_cause": "insufficient_transfer_time",
+          "primary_cause": "flight_irregularity",
+          "contributing_factors": [
+            "Inbound flight CM305 delayed 45 minutes",
+            "Actual connection time 15 min < MCT 45 min",
+            "No buffer time available"
+          ],
+          "preventable": true,
+          "prevention_strategy": "Earlier risk detection with 30min+ delay threshold",
+          "confidence": 0.94
+        },
+        "customer_service": {
+          "executed_at": "T+4:30",
+          "pir_generated": true,
+          "pir_number": "PTY20251215001",
+          "passenger_notified": true,
+          "notification_methods": ["email", "sms"],
+          "message": "We sincerely apologize. Your bag missed connection on CM121. PIR #PTY20251215001. Rebooked on CM123 departing 18:30. Delivered by 21:00 tonight. Compensation approved."
+        },
+        "compensation": {
+          "executed_at": "T+5:00",
+          "calculation_basis": "Montreal Convention",
+          "delay_hours": 4,
+          "compensation_amount_usd": 100,
+          "breakdown": {
+            "interim_expenses": 100,
+            "reason": "24hr delay compensation"
+          },
+          "requires_approval": true,
+          "approval_threshold": 50,
+          "approved_by": "Supervisor_Rodriguez",
+          "approved_at": "T+5:15"
+        },
+        "recovery_plan": {
+          "next_flight": "CM123",
+          "departure": "2025-12-15T18:30:00-05:00",
+          "arrival": "2025-12-15T20:30:00-05:00",
+          "delivery_method": "carousel",
+          "estimated_delivery": "2025-12-15T21:00:00-05:00"
+        }
+      },
+      "demo_script": [
+        "T+3:30 - Bag TAG-DEMO-003 misses CM121 departure",
+        "T+3:35 - System transitions to MISHANDLED state",
+        "T+4:00 - Root Cause Agent analyzes",
+        "T+4:05 - Cause identified: 45 min inbound delay",
+        "T+4:30 - Customer Service generates PIR PTY20251215001",
+        "T+4:35 - Passenger notified via SMS + Email",
+        "T+5:00 - Compensation Agent calculates $100",
+        "T+5:15 - Supervisor approves compensation",
+        "T+5:30 - Route Optimization rebooks on CM123 (18:30)",
+        "T+6:00 - Bag loaded on CM123",
+        "✅ Delivered 21:00 with $100 compensation"
+      ]
+    },
+    {
+      "scenario_id": 4,
+      "name": "Equipment Failure → Dynamic Rerouting",
+      "bag_id": "TAG-DEMO-004",
+      "description": "Conveyor CONV-5 fails. Infrastructure agent detects, bag dynamically rerouted.",
+      "expected_outcome": "Success - Rerouted via backup equipment",
+      "demo_timing": "T+5:30 to T+7:00",
+      "bag": {
+        "bag_id": "TAG-DEMO-004",
+        "tag_number": "TAG-DEMO-004",
+        "passenger": {
+          "name": "Diego Hernández",
+          "booking_ref": "GHI789",
+          "contact": "+507-6234-5678",
+          "email": "diego.hernandez@email.com",
+          "frequent_flyer": "CM234567890",
+          "tier": "Silver"
+        },
+        "journey": {
+          "type": "connection",
+          "origin": "BOG",
+          "destination": "MIA",
+          "inbound_flight": "CM101",
+          "inbound_arrival": "2025-12-15T14:30:00-05:00",
+          "outbound_flight": "CM307",
+          "outbound_departure": "2025-12-15T16:00:00-05:00",
+          "connection_airport": "PTY",
+          "final_destination": "MIA",
+          "connection_time_min": 90,
+          "connection_category": "normal",
+          "mct_min": 45
+        },
+        "characteristics": {
+          "weight_kg": 22.0,
+          "type": "standard",
+          "special_handling": null,
+          "declared_value_usd": 0
+        },
+        "risk_factors": {
+          "tight_connection": false,
+          "first_bag": true,
+          "vip_passenger": false,
+          "high_value": false,
+          "international": true
+        },
+        "routing": {
+          "original_route": ["PTY-T1", "SORT-1", "CONV-5", "GATE-A8"],
+          "assigned_conveyor": "CONV-5",
+          "backup_route": ["PTY-T1", "SORT-1", "CONV-6", "GATE-A8"],
+          "rerouted": true
+        },
+        "current_status": "in_transit",
+        "current_location": "PTY-SORT-1"
+      },
+      "infrastructure_event": {
+        "failure_detected_at": "T+5:30",
+        "equipment_id": "CONV-5",
+        "equipment_type": "conveyor",
+        "failure_type": "motor_malfunction",
+        "affected_bags": 23,
+        "infrastructure_health_analysis": {
+          "equipment_id": "CONV-5",
+          "status": "failed",
+          "health_score_before": 75,
+          "health_score_after": 0,
+          "last_maintenance": "2025-12-01",
+          "failure_prediction": {
+            "predicted": true,
+            "confidence": 0.82,
+            "warning_issued_at": "2025-12-14T10:00:00-05:00",
+            "reason": "Vibration levels elevated, recommended maintenance"
+          },
+          "work_order_created": true,
+          "work_order_id": "WO-PTY-20251215-003"
+        },
+        "dynamic_rerouting": {
+          "affected_bags_count": 23,
+          "reroute_executed_at": "T+5:35",
+          "alternative_routes": {
+            "CONV-6": 12,
+            "manual_cart": 11
+          },
+          "route_optimization_time_ms": 245,
+          "all_bags_rerouted": true,
+          "zero_missed_connections": true
+        },
+        "demand_forecast_update": {
+          "additional_handlers_needed": 3,
+          "reason": "11 bags require manual cart transport",
+          "handlers_dispatched": 3,
+          "eta_minutes": 5
+        }
+      },
+      "demo_script": [
+        "T+5:30 - CONV-5 motor fails (23 bags affected)",
+        "T+5:31 - Infrastructure Health Agent detects failure",
+        "T+5:32 - Alert: CONV-5 OFFLINE",
+        "T+5:35 - Route Optimization recalculates 23 routes",
+        "T+5:36 - 12 bags → CONV-6, 11 bags → manual cart",
+        "T+5:40 - Demand Forecast: +3 handlers needed",
+        "T+5:45 - 3 handlers dispatched to manual carts",
+        "T+6:00 - All 23 bags successfully rerouted",
+        "T+6:30 - Work order WO-PTY-003 created for CONV-5",
+        "✅ Zero missed connections despite equipment failure"
+      ]
+    },
+    {
+      "scenario_id": 5,
+      "name": "Peak Operations - System at Scale",
+      "bag_ids": ["TAG-DEMO-5-001", "TAG-DEMO-5-002", "...", "TAG-DEMO-5-200"],
+      "description": "200 bags processed simultaneously during afternoon peak. Demonstrates system scalability.",
+      "expected_outcome": "Success - All bags processed efficiently",
+      "demo_timing": "T+7:30 to T+9:00",
+      "summary": {
+        "total_bags": 200,
+        "time_window": "14:00-18:00 (4 hours)",
+        "flights_involved": 25,
+        "connection_bags": 140,
+        "local_bags": 60,
+        "high_risk_bags": 15,
+        "interventions_triggered": 12,
+        "interventions_successful": 12,
+        "mishandlings": 0
+      },
+      "performance_metrics": {
+        "orchestrator_throughput": "6.2 bags/sec",
+        "prediction_agent_avg_response_ms": 145,
+        "route_optimization_avg_response_ms": 89,
+        "infrastructure_health_checks": 200,
+        "demand_forecast_updates": 8,
+        "zero_errors": true,
+        "success_rate": "100%"
+      },
+      "visualization": {
+        "type": "3D_hub_view",
+        "elements": [
+          "PTY terminal with live bag movements",
+          "Conveyor systems animated",
+          "Flight gates with bag counts",
+          "Real-time risk heatmap",
+          "Agent activity dashboard"
+        ]
+      },
+      "demo_script": [
+        "T+7:30 - Afternoon peak begins (14:00)",
+        "T+7:35 - 200 bags active in system",
+        "T+7:40 - Dashboard: 6.2 bags/sec throughput",
+        "T+7:45 - 12 at-risk connections identified",
+        "T+7:50 - All 12 interventions successful",
+        "T+8:00 - 3D visualization: Copa hub operations",
+        "T+8:15 - Infrastructure monitoring: all green",
+        "T+8:30 - Demand forecast: staffing optimal",
+        "T+8:45 - ROI calculation: $4,740 saved today",
+        "✅ 100% success rate at scale"
+      ]
+    }
+  ],
+  "presentation_flow": {
+    "timeline": [
+      {"time": "T+0:00", "event": "Demo start - Dashboard overview", "duration": "30s"},
+      {"time": "T+0:30", "event": "Scenario 1: Happy Path", "duration": "60s"},
+      {"time": "T+1:30", "event": "Scenario 2: AI Prevention (KEY DEMO)", "duration": "120s"},
+      {"time": "T+3:30", "event": "Scenario 3: Mishandling Recovery", "duration": "120s"},
+      {"time": "T+5:30", "event": "Scenario 4: Infrastructure Failure", "duration": "90s"},
+      {"time": "T+7:00", "event": "Scenario 5: Scale Demonstration", "duration": "120s"},
+      {"time": "T+9:00", "event": "ROI & Business Impact", "duration": "60s"},
+      {"time": "T+10:00", "event": "Q&A", "duration": "varies"}
+    ],
+    "key_messages": [
+      "AI prevents 80% of potential mishandlings",
+      "79x ROI per intervention",
+      "Zero missed connections despite equipment failures",
+      "100% success rate at peak operations",
+      "$2.1M annual savings for Copa"
+    ]
+  }
+}
