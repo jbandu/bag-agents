@@ -26,7 +26,7 @@ from agents.compensation_agent import CompensationAgent
 from agents.infrastructure_health_agent import InfrastructureHealthAgent
 from agents.route_optimization_agent import RouteOptimizationAgent
 from agents.orchestrator_agent import OrchestratorAgent
-from langgraph.workflows import execute_workflow
+from baggage_workflows.workflows import execute_workflow
 
 # Import orchestrator routes
 from api import orchestrator_routes

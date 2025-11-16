@@ -39,8 +39,8 @@ async def demo_simple_journey():
     print("DEMO 1: Simple Bag Journey (Happy Path)")
     print("=" * 70)
 
-    from langgraph.baggage_orchestrator import BaggageOrchestrator
-    from langgraph.orchestrator_state import create_initial_bag_state
+    from baggage_workflows.baggage_orchestrator import BaggageOrchestrator
+    from baggage_workflows.orchestrator_state import create_initial_bag_state
 
     # Mock agents (in production, use real agents)
     mock_agents = {}
@@ -92,8 +92,8 @@ async def demo_connection_journey():
     print("DEMO 2: Bag with Connection")
     print("=" * 70)
 
-    from langgraph.baggage_orchestrator import BaggageOrchestrator
-    from langgraph.orchestrator_state import create_initial_bag_state
+    from baggage_workflows.baggage_orchestrator import BaggageOrchestrator
+    from baggage_workflows.orchestrator_state import create_initial_bag_state
 
     mock_agents = {}
     orchestrator = BaggageOrchestrator(agents=mock_agents, enable_checkpoints=True)
@@ -141,10 +141,10 @@ async def demo_event_processing():
     print("DEMO 3: Event Processing")
     print("=" * 70)
 
-    from langgraph.baggage_orchestrator import BaggageOrchestrator
-    from langgraph.orchestrator_state import create_initial_bag_state
-    from langgraph.event_system import EventProcessor, EventType, EventPriority
-    from langgraph.state_persistence import StatePersistenceManager
+    from baggage_workflows.baggage_orchestrator import BaggageOrchestrator
+    from baggage_workflows.orchestrator_state import create_initial_bag_state
+    from baggage_workflows.event_system import EventProcessor, EventType, EventPriority
+    from baggage_workflows.state_persistence import StatePersistenceManager
 
     # Mock database manager (in production, use real DB)
     class MockDB:
@@ -225,8 +225,8 @@ async def demo_mishandling():
     print("DEMO 4: Mishandling Scenario")
     print("=" * 70)
 
-    from langgraph.event_system import EventProcessor, EventType
-    from langgraph.orchestrator_state import BagStatus
+    from baggage_workflows.event_system import EventProcessor, EventType
+    from baggage_workflows.orchestrator_state import BagStatus
 
     print("\n🚨 Simulating bag mishandling detection...")
 
@@ -254,7 +254,7 @@ async def demo_mishandling():
         agents = {}
 
     mock_db = MockDB()
-    from langgraph.state_persistence import StatePersistenceManager
+    from baggage_workflows.state_persistence import StatePersistenceManager
     persistence = StatePersistenceManager(mock_db)
     processor = EventProcessor(MockOrch(), persistence)
 
@@ -295,7 +295,7 @@ async def demo_approval_workflow():
     print("DEMO 5: Human Approval Workflow")
     print("=" * 70)
 
-    from langgraph.orchestrator_state import Intervention, ApprovalStatus
+    from baggage_workflows.orchestrator_state import Intervention, ApprovalStatus
     import uuid
 
     print("\n💎 High-value bag detected (value: $7,500)")
@@ -353,7 +353,7 @@ async def demo_complete_system():
     print("DEMO 6: Complete System Simulation")
     print("=" * 70)
 
-    from langgraph.orchestrator_state import create_initial_bag_state
+    from baggage_workflows.orchestrator_state import create_initial_bag_state
 
     # Simulate multiple bags
     bags = [

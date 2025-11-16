@@ -37,7 +37,7 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 # Copy application code
 COPY agents/ ./agents/
 COPY models/ ./models/
-COPY langgraph/ ./langgraph/
+COPY baggage_workflows/ ./baggage_workflows/
 COPY utils/ ./utils/
 COPY api/ ./api/
 
