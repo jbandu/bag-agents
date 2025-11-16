@@ -40,6 +40,10 @@ COPY models/ ./models/
 COPY baggage_workflows/ ./baggage_workflows/
 COPY utils/ ./utils/
 COPY api/ ./api/
+COPY start.sh ./start.sh
+
+# Make start script executable
+RUN chmod +x start.sh
 
 # Create non-root user
 RUN useradd -m -u 1000 appuser && \
@@ -52,9 +56,9 @@ USER appuser
 # 9090 for Prometheus metrics
 EXPOSE 8000 9090
 
-# Health check
+# Health check - use PORT env variable
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/health')"
+    CMD python -c "import os, requests; port=os.getenv('PORT', '8000'); requests.get(f'http://localhost:{port}/health')"
 
 # Run the application
-CMD ["python", "-m", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["./start.sh"]
