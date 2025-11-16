@@ -36,9 +36,31 @@ class DatabaseConfig(BaseSettings):
     neo4j_user: Optional[str] = None
     neo4j_password: Optional[str] = None
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
+    model_config = {
+        'env_file': '.env',
+        'case_sensitive': False,
+        'extra': 'ignore'
+    }
+
+    def __init__(self, **kwargs):
+        """Initialize config, falling back to os.getenv if needed."""
+        # If database_url not in kwargs, try to get it from environment
+        if 'database_url' not in kwargs:
+            database_url = os.getenv('DATABASE_URL')
+            if database_url:
+                logger.info("Loaded DATABASE_URL from environment")
+                kwargs['database_url'] = database_url
+            else:
+                logger.warning("DATABASE_URL not found in environment")
+        super().__init__(**kwargs)
+
+        # Log what we loaded
+        if self.database_url:
+            logger.info("DatabaseConfig initialized with DATABASE_URL")
+        elif self.neon_db_host:
+            logger.info(f"DatabaseConfig initialized with individual settings (host: {self.neon_db_host})")
+        else:
+            logger.warning("DatabaseConfig initialized without PostgreSQL credentials")
 
     def get_postgres_params(self) -> Dict[str, Any]:
         """
@@ -51,8 +73,9 @@ class DatabaseConfig(BaseSettings):
         """
         # If DATABASE_URL is provided, parse it
         if self.database_url:
+            logger.info(f"Using DATABASE_URL for PostgreSQL connection")
             parsed = urlparse(self.database_url)
-            return {
+            params = {
                 'host': parsed.hostname,
                 'port': parsed.port or 5432,
                 'database': parsed.path.lstrip('/').split('?')[0],
@@ -60,16 +83,26 @@ class DatabaseConfig(BaseSettings):
                 'password': parsed.password,
                 'sslmode': 'require' if 'sslmode=require' in self.database_url else self.neon_db_sslmode
             }
+            logger.info(f"Parsed connection params: host={params['host']}, port={params['port']}, database={params['database']}, user={params['user']}")
+            return params
 
         # Otherwise use individual settings
-        return {
-            'host': self.neon_db_host,
-            'port': self.neon_db_port,
-            'database': self.neon_db_name,
-            'user': self.neon_db_user,
-            'password': self.neon_db_password,
-            'sslmode': self.neon_db_sslmode
-        }
+        if self.neon_db_host:
+            logger.info(f"Using individual settings for PostgreSQL connection")
+            return {
+                'host': self.neon_db_host,
+                'port': self.neon_db_port,
+                'database': self.neon_db_name,
+                'user': self.neon_db_user,
+                'password': self.neon_db_password,
+                'sslmode': self.neon_db_sslmode
+            }
+
+        # No configuration provided
+        raise ValueError(
+            "No PostgreSQL configuration found. "
+            "Please set DATABASE_URL or individual NEON_DB_* environment variables."
+        )
 
 
 class DatabaseManager:
