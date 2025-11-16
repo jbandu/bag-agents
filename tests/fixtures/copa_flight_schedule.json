@@ -1,0 +1,127 @@
+{
+  "description": "Copa Airlines realistic flight schedule for PTY hub operations",
+  "hub": "PTY",
+  "date": "2024-11-16",
+  "timezone": "America/Panama",
+  "peak_hours": {
+    "morning_wave": {"start": "06:00", "end": "09:00"},
+    "afternoon_wave": {"start": "14:00", "end": "18:00"},
+    "evening_wave": {"start": "20:00", "end": "23:00"}
+  },
+  "flights": [
+    {
+      "flight_number": "CM101",
+      "route": "BOG-PTY",
+      "departure": "06:30",
+      "arrival": "08:30",
+      "aircraft": "737-800",
+      "capacity": 160,
+      "load_factor": 0.85,
+      "bags_expected": 136
+    },
+    {
+      "flight_number": "CM451",
+      "route": "PTY-JFK",
+      "departure": "10:30",
+      "arrival": "17:00",
+      "aircraft": "737-MAX9",
+      "capacity": 180,
+      "load_factor": 0.90,
+      "bags_expected": 162
+    },
+    {
+      "flight_number": "CM202",
+      "route": "MIA-PTY",
+      "departure": "12:00",
+      "arrival": "15:30",
+      "aircraft": "737-800",
+      "capacity": 160,
+      "load_factor": 0.82,
+      "bags_expected": 131
+    },
+    {
+      "flight_number": "CM645",
+      "route": "PTY-LIM",
+      "departure": "16:00",
+      "arrival": "19:30",
+      "aircraft": "737-800",
+      "capacity": 160,
+      "load_factor": 0.88,
+      "bags_expected": 141
+    },
+    {
+      "flight_number": "CM777",
+      "route": "PTY-JFK",
+      "departure": "08:00",
+      "arrival": "14:30",
+      "aircraft": "737-MAX9",
+      "capacity": 180,
+      "load_factor": 0.87,
+      "bags_expected": 157
+    },
+    {
+      "flight_number": "CM301",
+      "route": "GUA-PTY",
+      "departure": "13:45",
+      "arrival": "15:45",
+      "aircraft": "737-700",
+      "capacity": 140,
+      "load_factor": 0.78,
+      "bags_expected": 109
+    },
+    {
+      "flight_number": "CM789",
+      "route": "PTY-MEX",
+      "departure": "17:30",
+      "arrival": "22:00",
+      "aircraft": "737-800",
+      "capacity": 160,
+      "load_factor": 0.91,
+      "bags_expected": 146
+    },
+    {
+      "flight_number": "CM550",
+      "route": "PTY-GRU",
+      "departure": "22:15",
+      "arrival": "06:15+1",
+      "aircraft": "737-MAX9",
+      "capacity": 180,
+      "load_factor": 0.83,
+      "bags_expected": 149
+    }
+  ],
+  "connection_pairs": [
+    {
+      "inbound": "CM101",
+      "outbound": "CM451",
+      "mct_minutes": 45,
+      "scheduled_connection_time": 120,
+      "typical_bags": 25,
+      "risk_level": "low"
+    },
+    {
+      "inbound": "CM202",
+      "outbound": "CM645",
+      "mct_minutes": 45,
+      "scheduled_connection_time": 30,
+      "typical_bags": 18,
+      "risk_level": "high"
+    },
+    {
+      "inbound": "CM301",
+      "outbound": "CM789",
+      "mct_minutes": 45,
+      "scheduled_connection_time": 105,
+      "typical_bags": 12,
+      "risk_level": "low"
+    }
+  ],
+  "statistics": {
+    "total_daily_flights": 50,
+    "total_daily_bags": 1500,
+    "connection_rate": 0.70,
+    "average_connection_time_minutes": 85,
+    "peak_concurrent_operations": 12,
+    "mishandling_rate": 0.003
+  }
+}

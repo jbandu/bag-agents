@@ -1,0 +1,122 @@
+{
+  "description": "Copa Airlines test bag data for integration tests",
+  "test_bags": {
+    "happy_path": {
+      "bag_id": "BAG_TEST_001",
+      "tag_number": "0230100001",
+      "passenger_id": "PNR001",
+      "passenger_name": "Maria Rodriguez",
+      "origin_flight": "CM101",
+      "destination_flight": "CM451",
+      "origin_airport": "BOG",
+      "connection_airport": "PTY",
+      "destination_airport": "JFK",
+      "weight_kg": 23.5,
+      "declared_value": 500.0,
+      "special_handling": null,
+      "expected_risk_score": 15,
+      "expected_outcome": "delivered"
+    },
+    "at_risk_connection": {
+      "bag_id": "BAG_TEST_002",
+      "tag_number": "0230100002",
+      "passenger_id": "PNR002",
+      "passenger_name": "Carlos Martinez",
+      "origin_flight": "CM202",
+      "destination_flight": "CM645",
+      "origin_airport": "MIA",
+      "connection_airport": "PTY",
+      "destination_airport": "LIM",
+      "weight_kg": 25.3,
+      "declared_value": 800.0,
+      "special_handling": null,
+      "connection_time_minutes": 30,
+      "inbound_delay_minutes": 15,
+      "expected_risk_score": 85,
+      "expected_intervention": "expedite_transfer",
+      "expected_outcome": "delivered"
+    },
+    "mishandled_delayed": {
+      "bag_id": "BAG_TEST_003",
+      "tag_number": "0230100003",
+      "passenger_id": "PNR003",
+      "passenger_name": "Ana Lopez",
+      "origin_flight": "CM777",
+      "destination_flight": null,
+      "origin_airport": "PTY",
+      "connection_airport": null,
+      "destination_airport": "JFK",
+      "weight_kg": 22.1,
+      "declared_value": 1200.0,
+      "special_handling": "fragile",
+      "inbound_delay_minutes": 40,
+      "expected_outcome": "mishandled",
+      "expected_mishandling_type": "delayed",
+      "expected_root_cause": "flight_irregularity",
+      "expected_compensation": 100.0
+    },
+    "high_value": {
+      "bag_id": "BAG_TEST_004",
+      "tag_number": "0230100004",
+      "passenger_id": "PNR004",
+      "passenger_name": "Diego Hernandez",
+      "origin_flight": "CM451",
+      "destination_flight": null,
+      "origin_airport": "PTY",
+      "connection_airport": null,
+      "destination_airport": "JFK",
+      "weight_kg": 20.0,
+      "declared_value": 7500.0,
+      "special_handling": "priority",
+      "expected_approval_required": true,
+      "expected_outcome": "delivered"
+    },
+    "equipment_failure_affected": [
+      {
+        "bag_id": "BAG_TEST_005",
+        "tag_number": "0230100005",
+        "passenger_id": "PNR005",
+        "origin_flight": "CM101",
+        "destination_flight": "CM451",
+        "origin_airport": "BOG",
+        "connection_airport": "PTY",
+        "destination_airport": "JFK",
+        "weight_kg": 21.5,
+        "assigned_conveyor": "CONV-5",
+        "expected_reroute": true
+      },
+      {
+        "bag_id": "BAG_TEST_006",
+        "tag_number": "0230100006",
+        "passenger_id": "PNR006",
+        "origin_flight": "CM101",
+        "destination_flight": "CM451",
+        "origin_airport": "BOG",
+        "connection_airport": "PTY",
+        "destination_airport": "JFK",
+        "weight_kg": 19.8,
+        "assigned_conveyor": "CONV-5",
+        "expected_reroute": true
+      }
+    ]
+  },
+  "load_test_templates": {
+    "standard_bag": {
+      "weight_range_kg": [15.0, 30.0],
+      "declared_value_range": [0, 2000],
+      "special_handling_probability": 0.05,
+      "vip_probability": 0.05,
+      "connection_probability": 0.70
+    },
+    "connection_times": {
+      "tight": {"min": 30, "max": 44, "probability": 0.10},
+      "normal": {"min": 45, "max": 120, "probability": 0.70},
+      "comfortable": {"min": 121, "max": 240, "probability": 0.20}
+    }
+  },
+  "passenger_names": [
+    "Maria Garcia", "Juan Rodriguez", "Carlos Martinez", "Ana Lopez",
+    "Diego Hernandez", "Sofia Gonzalez", "Miguel Perez", "Isabella Sanchez",
+    "Luis Ramirez", "Camila Torres", "Jose Rivera", "Valentina Flores"
+  ]
+}
