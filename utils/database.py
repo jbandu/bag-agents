@@ -3,8 +3,10 @@ Database connection management for Neon (PostgreSQL) and Neo4j.
 """
 
 import logging
+import os
 from typing import Any, Dict, List, Optional
 from contextlib import asynccontextmanager
+from urllib.parse import urlparse
 
 import psycopg2
 from psycopg2.pool import SimpleConnectionPool
@@ -18,22 +20,89 @@ logger = logging.getLogger(__name__)
 class DatabaseConfig(BaseSettings):
     """Database configuration from environment variables."""
 
-    # Neon PostgreSQL
-    neon_db_host: str
+    # Option 1: Use full DATABASE_URL
+    database_url: Optional[str] = None
+
+    # Option 2: Use individual Neon PostgreSQL settings
+    neon_db_host: Optional[str] = None
     neon_db_port: int = 5432
-    neon_db_name: str
-    neon_db_user: str
-    neon_db_password: str
+    neon_db_name: Optional[str] = None
+    neon_db_user: Optional[str] = None
+    neon_db_password: Optional[str] = None
     neon_db_sslmode: str = "require"
 
-    # Neo4j
-    neo4j_uri: str
-    neo4j_user: str
-    neo4j_password: str
+    # Neo4j (optional)
+    neo4j_uri: Optional[str] = None
+    neo4j_user: Optional[str] = None
+    neo4j_password: Optional[str] = None
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
+    model_config = {
+        'env_file': '.env',
+        'case_sensitive': False,
+        'extra': 'ignore'
+    }
+
+    def __init__(self, **kwargs):
+        """Initialize config, falling back to os.getenv if needed."""
+        # If database_url not in kwargs, try to get it from environment
+        if 'database_url' not in kwargs:
+            database_url = os.getenv('DATABASE_URL')
+            if database_url:
+                logger.info("Loaded DATABASE_URL from environment")
+                kwargs['database_url'] = database_url
+            else:
+                logger.warning("DATABASE_URL not found in environment")
+        super().__init__(**kwargs)
+
+        # Log what we loaded
+        if self.database_url:
+            logger.info("DatabaseConfig initialized with DATABASE_URL")
+        elif self.neon_db_host:
+            logger.info(f"DatabaseConfig initialized with individual settings (host: {self.neon_db_host})")
+        else:
+            logger.warning("DatabaseConfig initialized without PostgreSQL credentials")
+
+    def get_postgres_params(self) -> Dict[str, Any]:
+        """
+        Get PostgreSQL connection parameters.
+
+        Parses DATABASE_URL if provided, otherwise uses individual settings.
+
+        Returns:
+            Dictionary with connection parameters
+        """
+        # If DATABASE_URL is provided, parse it
+        if self.database_url:
+            logger.info(f"Using DATABASE_URL for PostgreSQL connection")
+            parsed = urlparse(self.database_url)
+            params = {
+                'host': parsed.hostname,
+                'port': parsed.port or 5432,
+                'database': parsed.path.lstrip('/').split('?')[0],
+                'user': parsed.username,
+                'password': parsed.password,
+                'sslmode': 'require' if 'sslmode=require' in self.database_url else self.neon_db_sslmode
+            }
+            logger.info(f"Parsed connection params: host={params['host']}, port={params['port']}, database={params['database']}, user={params['user']}")
+            return params
+
+        # Otherwise use individual settings
+        if self.neon_db_host:
+            logger.info(f"Using individual settings for PostgreSQL connection")
+            return {
+                'host': self.neon_db_host,
+                'port': self.neon_db_port,
+                'database': self.neon_db_name,
+                'user': self.neon_db_user,
+                'password': self.neon_db_password,
+                'sslmode': self.neon_db_sslmode
+            }
+
+        # No configuration provided
+        raise ValueError(
+            "No PostgreSQL configuration found. "
+            "Please set DATABASE_URL or individual NEON_DB_* environment variables."
+        )
 
 
 class DatabaseManager:
@@ -64,15 +133,11 @@ class DatabaseManager:
             max_connections: Maximum number of connections in pool
         """
         try:
+            params = self.config.get_postgres_params()
             self.pg_pool = SimpleConnectionPool(
                 min_connections,
                 max_connections,
-                host=self.config.neon_db_host,
-                port=self.config.neon_db_port,
-                database=self.config.neon_db_name,
-                user=self.config.neon_db_user,
-                password=self.config.neon_db_password,
-                sslmode=self.config.neon_db_sslmode
+                **params
             )
             self.logger.info("PostgreSQL connection pool created successfully")
         except Exception as e:
@@ -80,7 +145,12 @@ class DatabaseManager:
             raise
 
     def connect_neo4j(self):
-        """Create Neo4j driver connection."""
+        """Create Neo4j driver connection (optional)."""
+        # Skip if Neo4j credentials not provided
+        if not all([self.config.neo4j_uri, self.config.neo4j_user, self.config.neo4j_password]):
+            self.logger.warning("Neo4j credentials not provided, skipping Neo4j connection")
+            return
+
         try:
             self.neo4j_driver = AsyncGraphDatabase.driver(
                 self.config.neo4j_uri,
@@ -89,7 +159,8 @@ class DatabaseManager:
             self.logger.info("Neo4j driver created successfully")
         except Exception as e:
             self.logger.error(f"Failed to create Neo4j driver: {e}")
-            raise
+            # Don't raise - Neo4j is optional
+            self.logger.warning("Continuing without Neo4j support")
 
     def close_all(self):
         """Close all database connections."""
